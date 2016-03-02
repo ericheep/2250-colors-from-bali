@@ -23,6 +23,9 @@ fun void playCombinations(string fileName, dur duration) {
     }
 
     SinOsc sin[columns];
+    OscOut osc;
+
+    osc.dest("127.0.0.1", 12001);
 
     for (int i; i < columns; i++) {
         sin[i].gain(0.2);
@@ -34,6 +37,7 @@ fun void playCombinations(string fileName, dur duration) {
             combinations[i][j].charAt(0) - 49 => int player;
             combinations[i][j].charAt(1) - 65 => int pitch;
             sin[j].freq(freqs[player][pitch]);
+            <<< i, player, pitch >>>;
         }
         duration => now;
     }
@@ -43,9 +47,9 @@ fun void playCombinations(string fileName, dur duration) {
     }
 }
 
-0.1581259151::second => dur duration;
+5::second => dur duration;
 
-playCombinations(me.dir() + "twos.txt", duration);
+// playCombinations(me.dir() + "twos.txt", duration);
 playCombinations(me.dir() + "threes.txt", duration);
 playCombinations(me.dir() + "fours.txt", duration);
 playCombinations(me.dir() + "fives.txt", duration);
