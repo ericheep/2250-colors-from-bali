@@ -29,7 +29,8 @@ fun void playCombinations(string fileName, dur duration) {
 
     for (int i; i < columns; i++) {
         sin[i].gain(0.2);
-        sin[i] => dac;
+        sin[i] => env[i] => dac;
+        env[i].set(0.1 * duration, 0.1 * duration, 1.0, 0.5 * duration);
     }
 
     for (int i; i < rows; i++) {
@@ -37,9 +38,13 @@ fun void playCombinations(string fileName, dur duration) {
             combinations[i][j].charAt(0) - 49 => int player;
             combinations[i][j].charAt(1) - 65 => int pitch;
             sin[j].freq(freqs[player][pitch]);
-            <<< i, player, pitch >>>;
+            env[j].keyOn();
         }
-        duration => now;
+        (duration * 0.1) => now;
+        for (int j; j < columns; j++) {
+            env[j].keyOff();
+        }
+        (duration * 0.9) => now;
     }
 
     for (int i; i < columns; i++) {
@@ -49,7 +54,7 @@ fun void playCombinations(string fileName, dur duration) {
 
 5::second => dur duration;
 
-// playCombinations(me.dir() + "twos.txt", duration);
+playCombinations(me.dir() + "twos.txt", duration);
 playCombinations(me.dir() + "threes.txt", duration);
 playCombinations(me.dir() + "fours.txt", duration);
 playCombinations(me.dir() + "fives.txt", duration);
