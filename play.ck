@@ -148,7 +148,7 @@ shuffledArray(8);
 // time for exactly 3 hours
 4.8::second => dur duration;
 
-// 10::second => now;
+10::second => now;
 // playCombinations(me.dir() + "twos.txt", duration);
 playCombinations(me.dir() + "threes.txt", duration);
 // playCombinations(me.dir() + "fours.txt", duration);

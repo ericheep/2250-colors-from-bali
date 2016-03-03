@@ -73,6 +73,7 @@ void draw() {
   fill(0, 0, 0);
   rect(-1, -1, width + 1, height + 1);
   
+  /*
   textSize(10);
   fill(0, 0, 360);
   inc = 0;
@@ -83,6 +84,7 @@ void draw() {
       inc++;
     }
   }
+  */
 
   textSize(32);
   chuckFrameCount++;
