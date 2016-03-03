@@ -14,10 +14,12 @@ String[][] collection;
 int metronome, chuckFrameCount, fadeDir;
 float fadeScale, topAlpha, botAlpha, topOffset, botOffset;
 int fadeFrames = -1;
+int inc = 0;
+
 
 void setup() {
-  size(800, 800);
-
+  //size(800, 800);
+  fullScreen();
   oscP5 = new OscP5(this, 12001);
   myRemoteLocation = new NetAddress("127.0.0.1", 12000);
 
@@ -36,6 +38,11 @@ void setup() {
   upcomingPitch = new String[10];
   currentPitch = new String[10];
   collection = new String[2250][10];
+  for (int i = 0; i < collection.length; i++) {
+    for (int j = 0; j < 10; j++) {
+      collection[i][j] = int(random(9)) + "";
+    }
+  }
 
   for (int i = 0; i < currentPitch.length; i++) {
     upcomingPitch[i] = "_";
@@ -63,12 +70,26 @@ void oscEvent(OscMessage msg) {
 }
 
 void draw() {
+  fill(0, 0, 0);
+  rect(-1, -1, width + 1, height + 1);
+  
+  textSize(10);
+  fill(0, 0, 360);
+  inc = 0;
+  for (int i = 0; i < 10; i++) {
+    text(collection[0][i], width/100.0 + inc * width/101, 30);
+    inc++;
+    if (i == 1 || i == 3 || i == 5 || i == 7) {
+      inc++;
+    }
+  }
+
+  textSize(32);
   chuckFrameCount++;
   fadeScale = chuckFrameCount/float(fadeFrames) * 360.0;
 
-  int inc = 0;
-  topAlpha = fadeScale;
-  botAlpha = (360 - fadeScale);
+  topAlpha = fadeScale/2.0;
+  botAlpha = (360 - fadeScale * 2);
 
   if (fadeDir == 0) {
     topOffset = -1;
@@ -78,8 +99,7 @@ void draw() {
     botOffset = -1;
   }
 
-  fill(0, 0, 0);
-  rect(-1, -1, width + 1, height + 1);
+  inc = 0;
   for (int i = 0; i < 10; i++) {
     fill(0, 0, 360, topAlpha);
     text(upcomingPitch[i], width/15.0 * inc + width/16.0, height/2.0 + 50 * topOffset);

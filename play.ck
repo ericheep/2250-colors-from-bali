@@ -73,17 +73,17 @@ fun void playCombinations(string fileName, dur duration) {
             upcomingPitch => currentPitch;
 
             if (upcomingPitches[upcomingPlayer][0] == "_") {
-                upcomingPitch + "" => upcomingPitches[upcomingPlayer][0];
+                (upcomingPitch + 1) + "" => upcomingPitches[upcomingPlayer][0];
             }
             else {
-                upcomingPitch + "" => upcomingPitches[upcomingPlayer][1];
+                (upcomingPitch + 1) + "" => upcomingPitches[upcomingPlayer][1];
             }
         }
 
-        <<< currentPitches[0][0], currentPitches[0][1],
-            currentPitches[1][0], currentPitches[1][1],
-            currentPitches[2][0], currentPitches[2][1],
-            currentPitches[3][0], currentPitches[3][1],
+        <<< currentPitches[0][0], currentPitches[0][1] + " ",
+            currentPitches[1][0], currentPitches[1][1] + " ",
+            currentPitches[2][0], currentPitches[2][1] + " ",
+            currentPitches[3][0], currentPitches[3][1] + " ",
             currentPitches[4][0], currentPitches[4][1] >>>;
 
         oscArrayOut("/upcomingPitches", upcomingPitches);
@@ -148,7 +148,7 @@ shuffledArray(8);
 // time for exactly 3 hours
 4.8::second => dur duration;
 
-2::second => now;
+// 10::second => now;
 // playCombinations(me.dir() + "twos.txt", duration);
 playCombinations(me.dir() + "threes.txt", duration);
 // playCombinations(me.dir() + "fours.txt", duration);
