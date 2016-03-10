@@ -18,7 +18,7 @@ fun void playCombinations(string fileName, dur duration) {
     250 => int NUM_SILENCE;
     "_" => string silence;
 
-    string combinations[rows + NUM_SILENCE][columns];
+    string combinations[rows][columns];
 
     /*
     RED
@@ -61,7 +61,7 @@ fun void playCombinations(string fileName, dur duration) {
 
     for (NUM_SILENCE => int i; i < rows + NUM_SILENCE; i++) {
         for (int j; j < columns; j++) {
-            silence => combinations[i][j];
+            // silence => combinations[i][j];
         }
     }
 
