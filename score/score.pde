@@ -28,7 +28,7 @@ void setup() {
   f = createFont("Menlo-Regular", 24, true);
   textFont(f);
   textAlign(CENTER, CENTER);
-  textSize(32);
+  textSize(45);
 
   colorMode(HSB, 360);
   noCursor();
@@ -70,23 +70,22 @@ void oscEvent(OscMessage msg) {
 }
 
 void draw() {
-  fill(0, 0, 0);
+  fill(0, 0, 360);
   rect(-1, -1, width + 1, height + 1);
-  
+
   /*
   textSize(10);
-  fill(0, 0, 360);
-  inc = 0;
-  for (int i = 0; i < 10; i++) {
-    text(collection[0][i], width/100.0 + inc * width/101, 30);
-    inc++;
-    if (i == 1 || i == 3 || i == 5 || i == 7) {
-      inc++;
-    }
-  }
-  */
+   fill(0, 0, 360);
+   inc = 0;
+   for (int i = 0; i < 10; i++) {
+   text(collection[0][i], width/100.0 + inc * width/101, 30);
+   inc++;
+   if (i == 1 || i == 3 || i == 5 || i == 7) {
+   inc++;
+   }
+   }
+   */
 
-  textSize(32);
   chuckFrameCount++;
   fadeScale = chuckFrameCount/float(fadeFrames) * 360.0;
 
@@ -101,18 +100,25 @@ void draw() {
     botOffset = -1;
   }
 
+  float h = height/4.0 * 3 + 35;
+
+  for (int i = 0; i < 4; i++) {
+    //stroke(0, 0, 0);
+    //line((i + 1) * width/4.0, 0, height, height);
+  }
+
   inc = 0;
   for (int i = 0; i < 10; i++) {
-    fill(0, 0, 360, topAlpha);
-    text(upcomingPitch[i], width/15.0 * inc + width/16.0, height/2.0 + 50 * topOffset);
+    fill(0, 0, 0, topAlpha);
+    text(upcomingPitch[i], width/15.0 * inc + width/16.0, h + 55 * topOffset);
 
-    fill(0, 0, 360, botAlpha);
-    text(currentPitch[i], width/15.0 * inc + width/16.0, height/2.0 + 50 * botOffset);
+    fill(0, 0, 0, botAlpha);
+    text(currentPitch[i], width/15.0 * inc + width/16.0, h + 55 * botOffset);
     inc++;
     if (i == 1 || i == 3 || i == 5 || i == 7) {
       inc++;
     }
   }
   fill (0, 0, 360);
-  ellipse(width/9.0 * metronome + width/9.0, height/2.0, 10, 10);
+  ellipse(width/9.0 * metronome + width/9.0, h + 10, 10, 10);
 }

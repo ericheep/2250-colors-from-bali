@@ -15,17 +15,53 @@ fun void playCombinations(string fileName, dur duration) {
     data => int columns;
     <<< rows, columns >>>;
 
-    string combinations[rows][columns];
+    250 => int NUM_SILENCE;
+    "_" => string silence;
 
-    [[1243, 1345, 1711, 1808, 2357],
-    [1238, 1335, 1701, 1798, 2352],
-    [1168, 904, 855, 673, 624],
-    [1162, 893, 845, 662, 613],
-    [285, 220, 204, 161, 150]] @=> int freqs[][];
+    string combinations[rows + NUM_SILENCE][columns];
+
+    /*
+    RED
+    1=2357Hz 5=1808Hz 4=1711Hz 3=1345Hz 2=1243Hz
+    ordered
+    1=2357, 2=1243hz, 3=1345hz, 4=1711hz, 5=1808hz
+
+    BLUE
+    1=2352Hz 5=1798Hz 4=1701Hz 3=1335Hz 2=1238Hz
+    ordered
+    1=2352hz, 2=1238hz, 3=1335hz, 4=1701hz, 5=1798hz
+
+    PINK
+    1=1168Hz 5=904Hz 4=855Hz 3=673 2=624Hz
+    ordered
+    1=1168hz, 2=624hz, 3=673hz, 4=885hz, 5=904hz
+
+    GREEN
+    1=1162Hz 5=893Hz 4=845Hz 3=662Hz 2=613Hz
+    ordered
+    1=1162hz, 2=613hz, 3=662hz, 4=845hz, 5=893hz
+
+    BLACK
+    1=285Hz 5=220Hz 4=204Hz 3=161Hz 2=150Hz
+    ordered
+    1=285hz, 2=150hz, 3=161hz, 4=204hz, 5=220hz
+    */
+
+    [[2357, 1243, 1345, 1711, 1808],
+     [2352, 1238, 1335, 1701, 1798],
+     [1168, 624, 673, 855, 904],
+     [1162, 613, 662, 845, 893],
+     [285, 150, 161, 204, 220]] @=> int freqs[][];
 
     for (int i; i < rows; i++) {
         for (int j; j < columns; j++) {
             data => combinations[i][j];
+        }
+    }
+
+    for (NUM_SILENCE => int i; i < rows + NUM_SILENCE; i++) {
+        for (int j; j < columns; j++) {
+            silence => combinations[i][j];
         }
     }
 
@@ -34,11 +70,15 @@ fun void playCombinations(string fileName, dur duration) {
     string currentPitches[5][2];
     string upcomingPitches[5][2];
 
-    int upcomingPlayer, currentPlayer;
-    int upcomingPitch, currentPitch;
+    int upcomingPlayer[columns];
+    int currentPlayer[columns];
+
+    int upcomingPitch[columns];
+    int currentPitch[columns];
 
     for (int i; i < columns; i++) {
         sin[i].gain(0.2);
+        // sin[i].gain(0.2);
         sin[i] => env[i] => dac;
         env[i].set(0.01 * duration, 0::samp, 1.0, 0.99 * duration);
     }
@@ -61,26 +101,42 @@ fun void playCombinations(string fileName, dur duration) {
         }
 
         for (int j; j < columns; j++) {
-            combinations[shuffle[i]][j].charAt(0) - 49 => upcomingPlayer;
-            combinations[shuffle[i]][j].charAt(1) - 65 => upcomingPitch;
+            upcomingPlayer[j] => currentPlayer[j];
+            upcomingPitch[j] => currentPitch[j];
 
-            if (i != 0) {
-                sin[j].freq(freqs[currentPlayer][currentPitch]);
-                env[j].keyOn();
-            }
+            // <<< combinations[shuffle[i]][j] >>>;
+            // if (combinations[shuffle[i]][j] != silence) {
+                if (i != 0) {
+                    sin[j].freq(freqs[currentPlayer[j]][currentPitch[j]]);
+                    env[j].keyOn();
+                }
 
-            upcomingPlayer => currentPlayer;
-            upcomingPitch => currentPitch;
+                combinations[shuffle[i]][j].charAt(0) - 49 => upcomingPlayer[j];
+                combinations[shuffle[i]][j].charAt(1) - 65 => upcomingPitch[j];
 
-            if (upcomingPitches[upcomingPlayer][0] == "_") {
-                (upcomingPitch + 1) + "" => upcomingPitches[upcomingPlayer][0];
-            }
-            else {
-                (upcomingPitch + 1) + "" => upcomingPitches[upcomingPlayer][1];
-            }
+                if (i != 0) {
+                    sin[j].freq(freqs[currentPlayer[j]][currentPitch[j]]);
+                    env[j].keyOn();
+                }
+
+                if (upcomingPitches[upcomingPlayer[j]][0] == "_") {
+                    upcomingPitch[j] + 1 + "" => upcomingPitches[upcomingPlayer[j]][0];
+                }
+                else {
+                    upcomingPitch[j] + 1 + "" => upcomingPitches[upcomingPlayer[j]][1];
+                }
+                // <<< "upcoming", upcomingPlayer[j], upcomingPitch[j], "current", currentPlayer[j], currentPitch[j], "" >>>;
+            // }
         }
 
-        <<< currentPitches[0][0], currentPitches[0][1] + " ",
+        <<< "upcoming",
+            upcomingPitches[0][0], upcomingPitches[0][1] + " ",
+            upcomingPitches[1][0], upcomingPitches[1][1] + " ",
+            upcomingPitches[2][0], upcomingPitches[2][1] + " ",
+            upcomingPitches[3][0], upcomingPitches[3][1] + " ",
+            upcomingPitches[4][0], upcomingPitches[4][1],
+            "current",
+            currentPitches[0][0], currentPitches[0][1] + " ",
             currentPitches[1][0], currentPitches[1][1] + " ",
             currentPitches[2][0], currentPitches[2][1] + " ",
             currentPitches[3][0], currentPitches[3][1] + " ",
@@ -145,7 +201,7 @@ fun int[] shuffledArray(int size) {
 
 shuffledArray(8);
 
-// time for exactly 3 hours
+// time for exactly 3 hours is 4.8
 4.8::second => dur duration;
 
 10::second => now;
@@ -153,20 +209,3 @@ shuffledArray(8);
 playCombinations(me.dir() + "threes.txt", duration);
 // playCombinations(me.dir() + "fours.txt", duration);
 // playCombinations(me.dir() + "fives.txt", duration);
-
-/*
-RED
-1=2357Hz 5=1808Hz 4=1711Hz 3=1345Hz 2=1243Hz
-
-BLUE
-1=2352Hz 5=1798Hz 4=1701Hz 3=1335Hz 2=1238Hz
-
-PINK
-1=1168Hz 5=904Hz 4=855Hz 3=673 2=624Hz
-
-GREEN
-1=1162Hz 5=893Hz 4=845Hz 3=662Hz 2=613Hz
-
-BLACK
-1=285Hz 5=220Hz 4=204Hz 3=161Hz 2=150Hz
-*/
