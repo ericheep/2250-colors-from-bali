@@ -119,6 +119,7 @@ void draw() {
       inc++;
     }
   }
-  fill (0, 0, 360);
-  ellipse(width/9.0 * metronome + width/9.0, h + 10, 10, 10);
+  fill (0, 360, 0);
+  ellipse(width/64.0 * metronome + width/2.0 - (width/64 * 4), h + 10, 10, 10);
+  //ellipse(width/9.0 * metronome + width/9.0, h + 10, 10, 10);
 }

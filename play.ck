@@ -16,8 +16,9 @@ fun void playCombinations(string fileName, dur duration) {
     <<< rows, columns >>>;
 
     250 => int NUM_SILENCE;
-    "_" => string silence;
+    // "s" => string silence;
 
+    // string combinations[rows + NUM_SILENCE][columns];
     string combinations[rows][columns];
 
     /*
@@ -59,11 +60,11 @@ fun void playCombinations(string fileName, dur duration) {
         }
     }
 
-    for (NUM_SILENCE => int i; i < rows + NUM_SILENCE; i++) {
+    /*for (NUM_SILENCE => int i; i < rows + NUM_SILENCE; i++) {
         for (int j; j < columns; j++) {
-            // silence => combinations[i][j];
+            silence => combinations[i][j];
         }
-    }
+    }*/
 
     SinOsc sin[columns];
     ADSR env[columns];
@@ -75,6 +76,8 @@ fun void playCombinations(string fileName, dur duration) {
 
     int upcomingPitch[columns];
     int currentPitch[columns];
+
+    int skipNext;
 
     for (int i; i < columns; i++) {
         sin[i].gain(0.2);
@@ -104,28 +107,26 @@ fun void playCombinations(string fileName, dur duration) {
             upcomingPlayer[j] => currentPlayer[j];
             upcomingPitch[j] => currentPitch[j];
 
-            // <<< combinations[shuffle[i]][j] >>>;
-            // if (combinations[shuffle[i]][j] != silence) {
-                if (i != 0) {
-                    sin[j].freq(freqs[currentPlayer[j]][currentPitch[j]]);
-                    env[j].keyOn();
-                }
+            if (i != 0) {
+                sin[j].freq(freqs[currentPlayer[j]][currentPitch[j]]);
+                env[j].keyOn();
+            }
 
-                combinations[shuffle[i]][j].charAt(0) - 49 => upcomingPlayer[j];
-                combinations[shuffle[i]][j].charAt(1) - 65 => upcomingPitch[j];
+            combinations[shuffle[i]][j].charAt(0) - 49 => upcomingPlayer[j];
+            combinations[shuffle[i]][j].charAt(1) - 65 => upcomingPitch[j];
 
-                if (i != 0) {
-                    sin[j].freq(freqs[currentPlayer[j]][currentPitch[j]]);
-                    env[j].keyOn();
-                }
+            if (i != 0) {
+                sin[j].freq(freqs[currentPlayer[j]][currentPitch[j]]);
+                env[j].keyOn();
+            }
 
-                if (upcomingPitches[upcomingPlayer[j]][0] == "_") {
-                    upcomingPitch[j] + 1 + "" => upcomingPitches[upcomingPlayer[j]][0];
-                }
-                else {
-                    upcomingPitch[j] + 1 + "" => upcomingPitches[upcomingPlayer[j]][1];
-                }
-                // <<< "upcoming", upcomingPlayer[j], upcomingPitch[j], "current", currentPlayer[j], currentPitch[j], "" >>>;
+            if (upcomingPitches[upcomingPlayer[j]][0] == "_") {
+                upcomingPitch[j] + 1 + "" => upcomingPitches[upcomingPlayer[j]][0];
+            }
+            else {
+                upcomingPitch[j] + 1 + "" => upcomingPitches[upcomingPlayer[j]][1];
+            }
+            // <<< "upcoming", upcomingPlayer[j], upcomingPitch[j], "current", currentPlayer[j], currentPitch[j], "" >>>;
             // }
         }
 
